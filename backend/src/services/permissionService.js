@@ -1,9 +1,9 @@
-import { User } from '../models/User.js';
-import { Role } from '../models/Role.js';
-import { PERMISSIONS } from '../utils/permissions.js';
+import { User } from "../models/User.js";
+import { Role } from "../models/Role.js";
+import { PERMISSIONS } from "../utils/permissions.js";
 
 export class PermissionService {
-  static async checkPermission(userId, requiredPermission, context = {}) {
+  async checkPermission(userId, requiredPermission, context = {}) {
     try {
       const user = await User.findById(userId);
       if (!user || !user.isActive) {
@@ -12,12 +12,12 @@ export class PermissionService {
 
       return await user.hasPermission(requiredPermission, context);
     } catch (error) {
-      console.error('Permission check error:', error);
+      console.error("Permission check error:", error);
       return false;
     }
   }
 
-  static async getUserPermissions(userId) {
+  async getUserPermissions(userId) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -26,20 +26,20 @@ export class PermissionService {
 
       return await user.getAllPermissions();
     } catch (error) {
-      console.error('Get user permissions error:', error);
+      console.error("Get user permissions error:", error);
       return [];
     }
   }
 
-  static async assignPermissionToUser(userId, permission) {
+  async assignPermissionToUser(userId, permission) {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       if (!Object.values(PERMISSIONS).includes(permission)) {
-        throw new Error('Invalid permission');
+        throw new Error("Invalid permission");
       }
 
       if (!user.directPermissions.includes(permission)) {
@@ -49,37 +49,37 @@ export class PermissionService {
 
       return true;
     } catch (error) {
-      console.error('Assign permission error:', error);
+      console.error("Assign permission error:", error);
       return false;
     }
   }
 
-  static async removePermissionFromUser(userId, permission) {
+  async removePermissionFromUser(userId, permission) {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       user.directPermissions = user.directPermissions.filter(
-        p => p !== permission
+        (p) => p !== permission
       );
       await user.save();
 
       return true;
     } catch (error) {
-      console.error('Remove permission error:', error);
+      console.error("Remove permission error:", error);
       return false;
     }
   }
 
-  static async assignRoleToUser(userId, roleId) {
+  async assignRoleToUser(userId, roleId) {
     try {
       const user = await User.findById(userId);
       const role = await Role.findById(roleId);
 
       if (!user || !role) {
-        throw new Error('User or role not found');
+        throw new Error("User or role not found");
       }
 
       if (!user.roles.includes(roleId)) {
@@ -89,26 +89,26 @@ export class PermissionService {
 
       return true;
     } catch (error) {
-      console.error('Assign role error:', error);
+      console.error("Assign role error:", error);
       return false;
     }
   }
 
-  static async removeRoleFromUser(userId, roleId) {
+  async removeRoleFromUser(userId, roleId) {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       user.roles = user.roles.filter(
-        id => id.toString() !== roleId.toString()
+        (id) => id.toString() !== roleId.toString()
       );
       await user.save();
 
       return true;
     } catch (error) {
-      console.error('Remove role error:', error);
+      console.error("Remove role error:", error);
       return false;
     }
   }

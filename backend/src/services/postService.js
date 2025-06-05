@@ -4,6 +4,9 @@ import { Post } from "../models/Post.js";
 import { PermissionService } from "./permissionService.js";
 import { PERMISSIONS } from "../utils/permissions.js";
 
+
+const permissionService = new PermissionService()
+
 export class PostService {
   async createPost(input, ctx) {
     try {
@@ -11,7 +14,7 @@ export class PostService {
 
       // Check if user can create posts for others
       if (authorId !== ctx.user._id.toString()) {
-        const canManagePosts = await PermissionService.checkPermission(
+        const canManagePosts = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_MANAGE
         );
@@ -56,12 +59,6 @@ export class PostService {
 
   async getAllPosts(input, ctx) {
     try {
-      console.log("PostService.getAllPosts called with input:", input);
-      console.log(
-        "Context user:",
-        ctx.user ? "authenticated" : "not authenticated"
-      );
-
       const filter = { isPublic: true };
 
       // Only show published posts to non-authenticated users
@@ -78,8 +75,6 @@ export class PostService {
         filter.author = input.authorId;
       }
 
-      console.log("Filter being used:", filter);
-
       const posts = await Post.find(filter)
         .populate("author", ctx.user ? "name email" : "name")
         .sort({ createdAt: -1 })
@@ -94,15 +89,8 @@ export class PostService {
         hasMore: (input.offset || 0) + (input.limit || 20) < total,
       };
 
-      console.log("PostService.getAllPosts returning:", {
-        postsCount: result.posts.length,
-        total: result.total,
-        hasMore: result.hasMore,
-      });
-
       return result;
     } catch (error) {
-      console.error("Error in PostService.getAllPosts:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch posts",
@@ -138,7 +126,7 @@ export class PostService {
           });
         }
 
-        const hasPermission = await PermissionService.checkPermission(
+        const hasPermission = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_READ
         );
@@ -206,13 +194,13 @@ export class PostService {
       let hasPermission = false;
 
       if (isOwner) {
-        hasPermission = await PermissionService.checkPermission(
+        hasPermission = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_UPDATE_OWN,
           { ownerId: post.author }
         );
       } else {
-        hasPermission = await PermissionService.checkPermission(
+        hasPermission = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_UPDATE
         );
@@ -253,13 +241,13 @@ export class PostService {
       let hasPermission = false;
 
       if (isOwner) {
-        hasPermission = await PermissionService.checkPermission(
+        hasPermission = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_DELETE_OWN,
           { ownerId: post.author }
         );
       } else {
-        hasPermission = await PermissionService.checkPermission(
+        hasPermission = await permissionService.checkPermission(
           ctx.user._id,
           PERMISSIONS.POST_DELETE
         );

@@ -3,7 +3,7 @@ import { Role } from "../models/Role.js";
 import { PERMISSIONS } from "../utils/permissions.js";
 
 export class PermissionService {
-  async checkPermission(userId, requiredPermission, context = {}) {
+  static async checkPermission(userId, requiredPermission, context = {}) {
     try {
       const user = await User.findById(userId);
       if (!user || !user.isActive) {
@@ -17,7 +17,7 @@ export class PermissionService {
     }
   }
 
-  async getUserPermissions(userId) {
+  static async getUserPermissions(userId) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -31,7 +31,7 @@ export class PermissionService {
     }
   }
 
-  async assignPermissionToUser(userId, permission) {
+  static async assignPermissionToUser(userId, permission) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -54,7 +54,7 @@ export class PermissionService {
     }
   }
 
-  async removePermissionFromUser(userId, permission) {
+  static async removePermissionFromUser(userId, permission) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -73,7 +73,7 @@ export class PermissionService {
     }
   }
 
-  async assignRoleToUser(userId, roleId) {
+  static async assignRoleToUser(userId, roleId) {
     try {
       const user = await User.findById(userId);
       const role = await Role.findById(roleId);
@@ -94,7 +94,7 @@ export class PermissionService {
     }
   }
 
-  async removeRoleFromUser(userId, roleId) {
+  static async removeRoleFromUser(userId, roleId) {
     try {
       const user = await User.findById(userId);
       if (!user) {

@@ -14,7 +14,7 @@ const postService = new PostService();
 export const postRouter = router({
   // Create post (requires post.create permission)
   create: createPermissionProcedure(PERMISSIONS.POST_CREATE)
-    .input(z.object(postValidation.createPostValidation(z)))
+    .input(postValidation.createPostValidation())
     .mutation(async ({ input, ctx }) => {
       const result = await postService.createPost(input, ctx);
       return result;
@@ -22,7 +22,7 @@ export const postRouter = router({
 
   // Get all posts (public endpoint, but shows more info to authenticated users)
   getAll: publicProcedure
-    .input(z.object(postValidation.getAllPostsFilters(z)))
+    .input(postValidation.getAllPostsFilters())
     .query(async ({ input, ctx }) => {
       const result = await postService.getAllPosts(input, ctx);
       return result;
@@ -30,7 +30,7 @@ export const postRouter = router({
 
   // Get post by ID (public for published posts, requires permission for others)
   getById: publicProcedure
-    .input(z.object(postValidation.getPostByIdFilters(z)))
+    .input(postValidation.getPostByIdFilters())
     .query(async ({ input, ctx }) => {
       const result = await postService.getPostById(input, ctx);
       return result;
@@ -38,7 +38,7 @@ export const postRouter = router({
 
   // Get user's own posts
   getMyPosts: protectedProcedure
-    .input(z.object(postValidation.getPostFilters(z)))
+    .input(postValidation.getPostFilters())
     .query(async ({ input, ctx }) => {
       const result = await postService.getOwnPosts(input, ctx);
       return result;
@@ -46,7 +46,7 @@ export const postRouter = router({
 
   // Update post (requires post.update permission or own post with post.update.own)
   update: protectedProcedure
-    .input(z.object(postValidation.updatePostValidation(z)))
+    .input(postValidation.updatePostValidation())
     .mutation(async ({ input, ctx }) => {
       const result = await postService.updatePost(input, ctx);
       return result;
@@ -54,7 +54,7 @@ export const postRouter = router({
 
   // Delete post (requires post.delete permission or own post with post.delete.own)
   delete: protectedProcedure
-    .input(z.object(postValidation.deletePostValidation(z)))
+    .input(postValidation.deletePostValidation())
     .mutation(async ({ input, ctx }) => {
       const result = await postService.deletePost(input, ctx);
       return result;
@@ -62,7 +62,7 @@ export const postRouter = router({
 
   // Moderate post (requires post.moderate permission)
   moderate: createPermissionProcedure(PERMISSIONS.POST_MODERATE)
-    .input(z.object(postValidation.createPostPermissionValidation(z)))
+    .input(postValidation.createPostPermissionValidation())
     .mutation(async ({ input }) => {
       const result = await postService.moderatePost(input);
       return result;

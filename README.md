@@ -1,6 +1,6 @@
 ## Full-Stack tRPC Application
 
-**A modern web application built with React, Express.js, Nx, and MongoDB featuring type-safe API communication through tRPC.**
+**A modern web application built with React, Express.js and MongoDB featuring type-safe API communication through tRPC.**
 
 ### 🚀 Tech Stack
 
@@ -19,7 +19,6 @@
 - **MongoDB** for data persistence
 
 **Development Tools:**
-- **Nx** for monorepo
 - **ESLint** for code linting
 - **Vite** for development server and building
 - **TanStack React Query** for server state management

@@ -7,6 +7,7 @@ const UserList = () => {
     error,
     refetch,
   } = trpc.user.getAll.useQuery();
+  
   const deleteUserMutation = trpc.user.delete.useMutation({
     onSuccess: () => {
       refetch();
